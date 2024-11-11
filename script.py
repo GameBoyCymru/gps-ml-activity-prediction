@@ -66,7 +66,7 @@ model.fit(X_train, y_train)
 
 # Evaluate the model
 y_pred = model.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
 
 
 # Prediction function for new data with formatted output
