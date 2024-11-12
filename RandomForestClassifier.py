@@ -91,8 +91,8 @@ def predict_activity(file_name, model):
     print("\nOverall Predicted Activity for the file:", overall_activity)
 
     # Display the first 20 row-by-row predictions in table format
-    print("\nFirst 20 row-by-row predictions:")
-    print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(20), headers='keys', tablefmt='pretty', showindex=False))
+    #print("\nFirst 20 row-by-row predictions:")
+    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False))
 
     return new_data, overall_activity
 
