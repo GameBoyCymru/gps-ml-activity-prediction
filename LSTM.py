@@ -95,7 +95,7 @@ model = Sequential([
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-history = model.fit(X_train, y_train, epochs=55, batch_size=18, validation_split=0.2)
+history = model.fit(X_train, y_train, epochs=55, batch_size=19, validation_split=0.2)
 
 # Evaluate the model
 y_pred = np.argmax(model.predict(X_test), axis=1)
