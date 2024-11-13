@@ -78,7 +78,7 @@ def create_sequences(df, window_size=50, is_predict=False):
 
 # Prepare data for model
 X, y = create_sequences(df_combined)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Build the LSTM model
 model = Sequential([
@@ -95,7 +95,7 @@ model = Sequential([
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.3)
+history = model.fit(X_train, y_train, epochs=55, batch_size=18, validation_split=0.2)
 
 # Evaluate the model
 y_pred = np.argmax(model.predict(X_test), axis=1)

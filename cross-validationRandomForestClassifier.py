@@ -34,7 +34,7 @@ df_combined = pd.concat(activity_data, ignore_index=True)
 # Check if 'activity' column exists and print column names for debugging
 if 'activity' not in df_combined.columns:
     raise KeyError("'activity' column is missing from df_combined.")
-print("Columns in df_combined:", df_combined.columns)
+#print("Columns in df_combined:", df_combined.columns)
 
 # Feature engineering function
 def extract_features(df):
@@ -55,12 +55,12 @@ y = df_combined['activity']
 # Create the RandomForestClassifier model
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 
-# Perform 5-fold cross-validation
-cv_scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+# Perform 10-fold cross-validation
+cv_scores = cross_val_score(model, X, y, cv=10, scoring='accuracy')
 
 # Print out the cross-validation scores and the mean accuracy
-print("Cross-Validation Scores:", cv_scores)
-print("Average Cross-Validation Accuracy:", np.mean(cv_scores))
+print("\nCross-Validation Scores:\n", cv_scores)
+print("\nAverage Cross-Validation Accuracy:", np.mean(cv_scores))
 
 # Prediction function for new data with formatted output
 def predict_activity(file_name, model):

@@ -38,7 +38,7 @@ df_combined = pd.concat(activity_data, ignore_index=True)
 # Check if 'activity' column exists and print column names for debugging
 if 'activity' not in df_combined.columns:
     raise KeyError("'activity' column is missing from df_combined.")
-print("Columns in df_combined:", df_combined.columns)
+#print("Columns in df_combined:", df_combined.columns)
 
 
 # Feature engineering function
@@ -58,7 +58,7 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 # Prepare data for model training
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
 y = df_combined['activity']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train the classifier
 model = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -92,7 +92,7 @@ def predict_activity(file_name, model):
 
     # Display the first 20 row-by-row predictions in table format
     #print("\nFirst 20 row-by-row predictions:")
-    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False))
+    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(20), headers='keys', tablefmt='pretty', showindex=False))
 
     return new_data, overall_activity
 

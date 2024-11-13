@@ -34,7 +34,7 @@ df_combined = pd.concat(activity_data, ignore_index=True)
 # Check if 'activity' column exists and print column names for debugging
 if 'activity' not in df_combined.columns:
     raise KeyError("'activity' column is missing from df_combined.")
-print("Columns in df_combined:", df_combined.columns)
+#print("Columns in df_combined:", df_combined.columns)
 
 # Enhanced Feature Engineering Function
 def extract_features(df):
@@ -65,7 +65,7 @@ param_grid = {
 grid_search = GridSearchCV(
     estimator=RandomForestClassifier(random_state=42),
     param_grid=param_grid,
-    cv=5,  # 5-fold cross-validation
+    cv=10,  # 10-fold cross-validation
     scoring='accuracy',
     n_jobs=-1  # Use all available CPU cores
 )
@@ -74,8 +74,8 @@ grid_search = GridSearchCV(
 grid_search.fit(X, y)
 
 # Print the best parameters and the corresponding score
-print("Best Parameters:", grid_search.best_params_)
-print("Best Cross-Validation Accuracy:", grid_search.best_score_)
+print("\nBest Parameters:\n", grid_search.best_params_)
+print("\nBest Cross-Validation Accuracy:", grid_search.best_score_)
 
 # Use the best model from GridSearchCV
 best_model = grid_search.best_estimator_
