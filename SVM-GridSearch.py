@@ -52,22 +52,22 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 y = df_combined['activity']
 
-# Set up hyperparameter grid for SVM
+# Set up hyperparameter grid for SVC
 param_grid = {
-    'n_estimators': [100, 200, 300],       # Number of trees in the forest
-    'max_depth': [10, 20, None],           # Maximum depth of the tree
-    'min_samples_split': [2, 5, 10],       # Minimum number of samples required to split an internal node
-    'min_samples_leaf': [1, 2, 4]          # Minimum number of samples required to be at a leaf node
+    'C': [0.1, 1, 10, 100],
+    'kernel': ['rbf'],
+    'gamma': ['scale', 'auto']
 }
 
 # Use GridSearchCV to perform cross-validated hyperparameter tuning
 grid_search = GridSearchCV(
-    estimator=SVC(kernel='rbf', random_state=42),
+    estimator=SVC(kernel='rbf', random_state=42, cache_size=500),
     param_grid=param_grid,
-    cv=10,  # 10-fold cross-validation
+    cv=10,
     scoring='accuracy',
-    n_jobs=-1  # Use all available CPU cores
+    n_jobs=-1
 )
+
 
 # Fit GridSearchCV to the data to find the best model
 grid_search.fit(X, y)

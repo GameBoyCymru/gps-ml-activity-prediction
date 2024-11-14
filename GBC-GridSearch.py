@@ -40,7 +40,7 @@ def extract_features(df):
     df['speed variance'] = df['speed (km/h)'].rolling(window=5, min_periods=1).std()
     df['avg speed'] = df['speed (km/h)'].rolling(window=5, min_periods=1).mean()
     df['distance'] = np.sqrt((df['longitude'].diff() ** 2 + df['latitude'].diff() ** 2))
-    df['acceleration'] = df['speed (km/h)'].diff()
+    df['acceleration'] = df['speed (km/h)'].diff()  # New feature: speed change between readings
     df = df.fillna(0)
     df = df.infer_objects()
     return df
@@ -52,21 +52,22 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 y = df_combined['activity']
 
-# Set up hyperparameter grid for GBC
+# Set up a smaller hyperparameter grid for GradientBoostingClassifier
 param_grid = {
-    'n_estimators': [100, 200, 300],       # Number of trees in the forest
-    'max_depth': [10, 20, None],           # Maximum depth of the tree
-    'min_samples_split': [2, 5, 10],       # Minimum number of samples required to split an internal node
-    'min_samples_leaf': [1, 2, 4]          # Minimum number of samples required to be at a leaf node
+    'n_estimators': [50, 100],         # Number of boosting stages
+    'learning_rate': [0.01, 0.1, 0.2],       # Learning rate shrinks the contribution of each tree
+    'max_depth': [3, 5, 7],                  # Maximum depth of the individual estimators
+    'min_samples_split': [2, 5, 10],         # Minimum number of samples required to split an internal node
+    'min_samples_leaf': [1, 2, 4]            # Minimum number of samples required to be at a leaf node
 }
 
-# Use GridSearchCV to perform cross-validated hyperparameter tuning
+# Use GridSearchCV with fewer cross-validation folds to speed up testing
 grid_search = GridSearchCV(
-    estimator=GradientBoostingClassifier(n_estimators=100, random_state=42),
+    estimator=GradientBoostingClassifier(random_state=42),
     param_grid=param_grid,
-    cv=10,  # 10-fold cross-validation
+    cv=5,  # Reduced to 5-fold cross-validation
     scoring='accuracy',
-    n_jobs=-1  # Use all available CPU cores
+    n_jobs=-1
 )
 
 # Fit GridSearchCV to the data to find the best model
@@ -100,10 +101,12 @@ def predict_activity(file_name, model):
     # Print overall activity
     print("\nOverall Predicted Activity for the file:", overall_activity)
 
-    # Display the first 20 row-by-row predictions in table format
-    #print("\nFirst 20 row-by-row predictions:")
-    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False))
-
     return new_data, overall_activity
 
+    #Display the first 20 row-by-row predictions in table format
+    #print("\nFirst 20 row-by-row predictions:")
+    #print(tabulate(result[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False)
+
 result, overall_activity = predict_activity("test_data.tsv", best_model)
+
+
