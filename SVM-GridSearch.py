@@ -1,13 +1,10 @@
 import pandas as pd
 import numpy as np
 import os
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
-from tabulate import tabulate  # Import tabulate for table formatting
-
-pd.set_option('future.no_silent_downcasting', True)  # Add this at the top of the script
-
+from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -24,7 +21,6 @@ def load_activity_data(activity, folder_path):
                 print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
     return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
 
-
 # Load and label data from each activity folder
 activity_data = []
 for activity, folder_path in [("Walking", "walking"),
@@ -38,35 +34,51 @@ df_combined = pd.concat(activity_data, ignore_index=True)
 # Check if 'activity' column exists and print column names for debugging
 if 'activity' not in df_combined.columns:
     raise KeyError("'activity' column is missing from df_combined.")
+#print("Columns in df_combined:", df_combined.columns)
 
-
-# Feature engineering function
+# Enhanced Feature Engineering Function
 def extract_features(df):
-    df['speed variance'] = df['speed (km/h)'].rolling(window=5).std()
-    df['avg speed'] = df['speed (km/h)'].rolling(window=5).mean()
+    df['speed variance'] = df['speed (km/h)'].rolling(window=5, min_periods=1).std()
+    df['avg speed'] = df['speed (km/h)'].rolling(window=5, min_periods=1).mean()
     df['distance'] = np.sqrt((df['longitude'].diff() ** 2 + df['latitude'].diff() ** 2))
+    df['acceleration'] = df['speed (km/h)'].diff()  # New feature: speed change between readings
     df = df.fillna(0)
-    df = df.infer_objects(copy=False)  # Fill NaNs and infer types separately
-
+    df = df.infer_objects()
     return df
-
 
 df_combined = df_combined.groupby('activity', group_keys=False).apply(
     lambda x: extract_features(x).assign(activity=x.name))
 
 # Prepare data for model training
-X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
+X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 y = df_combined['activity']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train the classifier
-model = SVC(kernel='rbf', random_state=42)
-model.fit(X_train, y_train)
+# Set up hyperparameter grid for RandomForestClassifier
+param_grid = {
+    'n_estimators': [100, 200, 300],       # Number of trees in the forest
+    'max_depth': [10, 20, None],           # Maximum depth of the tree
+    'min_samples_split': [2, 5, 10],       # Minimum number of samples required to split an internal node
+    'min_samples_leaf': [1, 2, 4]          # Minimum number of samples required to be at a leaf node
+}
 
-# Evaluate the model
-y_pred = model.predict(X_test)
-print("\nAccuracy:", accuracy_score(y_test, y_pred))
+# Use GridSearchCV to perform cross-validated hyperparameter tuning
+grid_search = GridSearchCV(
+    estimator=SVC(kernel='rbf', random_state=42),
+    param_grid=param_grid,
+    cv=10,  # 10-fold cross-validation
+    scoring='accuracy',
+    n_jobs=-1  # Use all available CPU cores
+)
 
+# Fit GridSearchCV to the data to find the best model
+grid_search.fit(X, y)
+
+# Print the best parameters and the corresponding score
+print("\nBest Parameters:\n", grid_search.best_params_)
+print("\nBest Cross-Validation Accuracy:", grid_search.best_score_)
+
+# Use the best model from GridSearchCV
+best_model = grid_search.best_estimator_
 
 # Prediction function for new data with formatted output
 def predict_activity(file_name, model):
@@ -77,7 +89,7 @@ def predict_activity(file_name, model):
 
     # Apply feature extraction
     new_data = extract_features(new_data)
-    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
+    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 
     # Make predictions for each row
     predictions = model.predict(X_new)
@@ -91,11 +103,10 @@ def predict_activity(file_name, model):
 
     # Display the first 20 row-by-row predictions in table format
     #print("\nFirst 20 row-by-row predictions:")
-    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(20), headers='keys', tablefmt='pretty', showindex=False))
+    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False))
 
     return new_data, overall_activity
 
-
 # Example usage with a new file
-result, overall_activity = predict_activity("test_data.tsv", model)
-
+# Since GridSearchCV has already fit the best model, we use it directly for prediction
+result, overall_activity = predict_activity("test_data.tsv", best_model)

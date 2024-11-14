@@ -1,13 +1,10 @@
 import pandas as pd
 import numpy as np
 import os
-from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
-from tabulate import tabulate  # Import tabulate for table formatting
-
-pd.set_option('future.no_silent_downcasting', True)  # Add this at the top of the script
-
+from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -24,7 +21,6 @@ def load_activity_data(activity, folder_path):
                 print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
     return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
 
-
 # Load and label data from each activity folder
 activity_data = []
 for activity, folder_path in [("Walking", "walking"),
@@ -38,18 +34,16 @@ df_combined = pd.concat(activity_data, ignore_index=True)
 # Check if 'activity' column exists and print column names for debugging
 if 'activity' not in df_combined.columns:
     raise KeyError("'activity' column is missing from df_combined.")
-
+#print("Columns in df_combined:", df_combined.columns)
 
 # Feature engineering function
 def extract_features(df):
-    df['speed variance'] = df['speed (km/h)'].rolling(window=5).std()
-    df['avg speed'] = df['speed (km/h)'].rolling(window=5).mean()
+    df['speed variance'] = df['speed (km/h)'].rolling(window=5, min_periods=1).std()
+    df['avg speed'] = df['speed (km/h)'].rolling(window=5, min_periods=1).mean()
     df['distance'] = np.sqrt((df['longitude'].diff() ** 2 + df['latitude'].diff() ** 2))
     df = df.fillna(0)
-    df = df.infer_objects(copy=False)  # Fill NaNs and infer types separately
-
+    df = df.infer_objects()
     return df
-
 
 df_combined = df_combined.groupby('activity', group_keys=False).apply(
     lambda x: extract_features(x).assign(activity=x.name))
@@ -57,16 +51,16 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 # Prepare data for model training
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
 y = df_combined['activity']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train the classifier
-model = SVC(kernel='rbf', random_state=42)
-model.fit(X_train, y_train)
+# Create the RandomForestClassifier model
+model = GradientBoostingClassifier(n_estimators=100, random_state=42)
 
-# Evaluate the model
-y_pred = model.predict(X_test)
-print("\nAccuracy:", accuracy_score(y_test, y_pred))
+# Perform 10-fold cross-validation
+cv_scores = cross_val_score(model, X, y, cv=10, scoring='accuracy')
 
+# Print out the cross-validation scores and the mean accuracy
+print("\nCross-Validation Scores:\n", cv_scores)
+print("\nAverage Cross-Validation Accuracy:", np.mean(cv_scores))
 
 # Prediction function for new data with formatted output
 def predict_activity(file_name, model):
@@ -91,11 +85,11 @@ def predict_activity(file_name, model):
 
     # Display the first 20 row-by-row predictions in table format
     #print("\nFirst 20 row-by-row predictions:")
-    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(20), headers='keys', tablefmt='pretty', showindex=False))
+    #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False))
 
     return new_data, overall_activity
 
-
 # Example usage with a new file
+# Note: The model needs to be fitted before using predict_activity.
+model.fit(X, y)  # Fit the model on the entire dataset for later predictions
 result, overall_activity = predict_activity("test_data.tsv", model)
-
