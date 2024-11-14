@@ -58,12 +58,11 @@ Each script includes a function to predict the activity for new data contained i
 
 ## Example Usage
 
-To use any of the models for prediction, you can run any of the scripts (corresponding to the model), and modify the following line (may look slightly different) to provide the path to `.tsv` to test.
+To use any of the models for prediction, you can run any of the scripts (corresponding to the model), and modify the following line (may look slightly different) to provide the path to `.tsv` to test. The line will be located at the end of each script.
 
 <sub>The `.tsv` must include the following columns:`Date`, `Longitude`, `Latitude`, `Speed (km/h)`.</sub>
 
 ```python
-# Example usage with a new file
 result, overall_activity = predict_activity("test_data.tsv", model)
 ```
 
@@ -75,7 +74,7 @@ Required Python libraries:
 - scikit-learn
 - tensorflow (for LSTM)
 
-Optional Python libraries:<
+Optional Python libraries:
 - tabulate (only required to print the results in a tabular format - disabled by default)
 
 You can install these dependencies using pip:
