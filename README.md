@@ -8,7 +8,7 @@ This project aims to predict the type of activity (e.g., Walking, Jogging, Commu
 2. Support Vector Machine (SVM)
 3. Gradient Boosting Classifier
 
-Additionally, GridSearch and CrossValidation techniques are applied to each of these algorithms to optimize their performance. A Long Short-Term Memory (LSTM) neural network is also implemented for activity prediction.
+Additionally, GridSearch and CrossValidation techniques are applied to each of these algorithms to optimize their performance. A Long Short-Term Memory (LSTM) neural network is also implemented for activity prediction. For all algorithms, the accuracy is printed to the console, alongside the activity the algorithm has predicted for the file. Optionally, tabulate can be used to also display the prediction on a row by row basis all Machine Learning models.
 
 ## Project Structure
 
@@ -58,7 +58,7 @@ Each script includes a function to predict the activity for new data contained i
 
 ## Example Usage
 
-To use any of the models for prediction, you can run any of the scripts (corresponding to the model), and modify the following line to provide the path to `.tsv` to test.
+To use any of the models for prediction, you can run any of the scripts (corresponding to the model), and modify the following line (may look slightly different) to provide the path to `.tsv` to test.
 
 <sub>The `.tsv` must include the following columns:`Date`, `Longitude`, `Latitude`, `Speed (km/h)`.</sub>
 
@@ -69,13 +69,14 @@ result, overall_activity = predict_activity("test_data.tsv", model)
 
 ## Dependencies
 
-The project requires the following Python libraries:
-
+Required Python libraries:
 - pandas
 - numpy
 - scikit-learn
 - tensorflow (for LSTM)
-- tabulate
+
+Optional Python libraries:<
+- tabulate (only required to print the results in a tabular format - disabled by default)
 
 You can install these dependencies using pip:
 
