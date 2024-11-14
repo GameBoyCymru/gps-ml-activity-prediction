@@ -2,8 +2,9 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.ensemble import GradientBoostingClassifier
+
 from tabulate import tabulate  # Import tabulate for table formatting
 
 pd.set_option('future.no_silent_downcasting', True)  # Add this at the top of the script
@@ -60,7 +61,7 @@ y = df_combined['activity']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train the classifier
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+model = GradientBoostingClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Evaluate the model
