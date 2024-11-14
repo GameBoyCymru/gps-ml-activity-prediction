@@ -3,8 +3,7 @@ import numpy as np
 import os
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
-from tabulate import tabulate
+#from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -53,7 +52,7 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 y = df_combined['activity']
 
-# Set up hyperparameter grid for RandomForestClassifier
+# Set up hyperparameter grid for SVM
 param_grid = {
     'n_estimators': [100, 200, 300],       # Number of trees in the forest
     'max_depth': [10, 20, None],           # Maximum depth of the tree
@@ -107,6 +106,4 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-# Example usage with a new file
-# Since GridSearchCV has already fit the best model, we use it directly for prediction
 result, overall_activity = predict_activity("test_data.tsv", best_model)

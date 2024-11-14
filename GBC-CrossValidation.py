@@ -3,8 +3,7 @@ import numpy as np
 import os
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score
-from tabulate import tabulate
+#from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -52,7 +51,7 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
 y = df_combined['activity']
 
-# Create the RandomForestClassifier model
+# Create the GBC model
 model = GradientBoostingClassifier(n_estimators=100, random_state=42)
 
 # Perform 10-fold cross-validation
@@ -89,7 +88,5 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-# Example usage with a new file
-# Note: The model needs to be fitted before using predict_activity.
-model.fit(X, y)  # Fit the model on the entire dataset for later predictions
+model.fit(X, y)
 result, overall_activity = predict_activity("test_data.tsv", model)

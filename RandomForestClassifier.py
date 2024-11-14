@@ -4,9 +4,9 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from tabulate import tabulate  # Import tabulate for table formatting
+#from tabulate import tabulate
 
-pd.set_option('future.no_silent_downcasting', True)  # Add this at the top of the script
+pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
 
 
 # Function to load and label data from multiple files in each folder

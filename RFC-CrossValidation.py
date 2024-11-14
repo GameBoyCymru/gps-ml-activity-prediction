@@ -3,8 +3,7 @@ import numpy as np
 import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score
-from tabulate import tabulate
+#from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -89,7 +88,6 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-# Example usage with a new file
-# Note: The model needs to be fitted before using predict_activity.
-model.fit(X, y)  # Fit the model on the entire dataset for later predictions
+
+model.fit(X, y)
 result, overall_activity = predict_activity("test_data.tsv", model)

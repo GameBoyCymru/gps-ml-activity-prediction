@@ -126,6 +126,4 @@ def predict_activity(file_name, model, le, scaler, window_size=50):
 
     return predicted_labels, overall_activity
 
-
-# Example usage with a new file
 predicted_labels, overall_activity = predict_activity("test_data.tsv", model, le, scaler)

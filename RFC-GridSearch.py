@@ -3,8 +3,7 @@ import numpy as np
 import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import accuracy_score
-from tabulate import tabulate
+#from tabulate import tabulate
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -107,6 +106,4 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-# Example usage with a new file
-# Since GridSearchCV has already fit the best model, we use it directly for prediction
 result, overall_activity = predict_activity("test_data.tsv", best_model)

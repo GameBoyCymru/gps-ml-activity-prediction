@@ -4,10 +4,9 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier
+#from tabulate import tabulate
 
-from tabulate import tabulate  # Import tabulate for table formatting
-
-pd.set_option('future.no_silent_downcasting', True)  # Add this at the top of the script
+pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
 
 
 # Function to load and label data from multiple files in each folder
@@ -96,7 +95,5 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-
-# Example usage with a new file
 result, overall_activity = predict_activity("test_data.tsv", model)
 
