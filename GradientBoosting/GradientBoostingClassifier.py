@@ -8,29 +8,32 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(script_dir, ".."))
 
-# Function to load and label data from multiple files in each folder
+
+# Function to load and label data
 def load_activity_data(activity, folder_path):
     data = []
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".tsv"):
             file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path, sep='\t', encoding='utf-16')  # Load TSV with proper encoding
-            df.columns = df.columns.str.strip().str.lower()  # Standardize column names
+            df = pd.read_csv(file_path, sep='\t', encoding='utf-16')
+            df.columns = df.columns.str.strip().str.lower()
             if 'speed (km/h)' in df.columns:
-                df['activity'] = activity  # Label the activity
+                df['activity'] = activity
                 data.append(df)
             else:
                 print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
     return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
 
-
-# Load and label data from each activity folder
+# Load data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "../data/walking"),
-                              ("Jogging", "../data/jogging"),
-                              ("Commuting", "../data/commuting")]:
-    activity_data.append(load_activity_data(activity, folder_path))
+for activity, folder_path in [("Walking", "data/walking"),
+                              ("Jogging", "data/jogging"),
+                              ("Commuting", "data/commuting")]:
+    full_path = os.path.join(parent_dir, folder_path)
+    activity_data.append(load_activity_data(activity, full_path))
 
 # Combine all labeled data into one DataFrame
 df_combined = pd.concat(activity_data, ignore_index=True)
@@ -95,5 +98,8 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-result, overall_activity = predict_activity("../test_data.tsv", model)
+# Construct the path to the test_data.tsv file
+test_data_path = os.path.join(parent_dir, "test_data.tsv")
+
+result, overall_activity = predict_activity(test_data_path, model)
 

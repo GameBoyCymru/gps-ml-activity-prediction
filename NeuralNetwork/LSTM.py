@@ -8,6 +8,10 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Input, LSTM, Dense, Dropout
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(script_dir, ".."))
+
+
 # Function to load and label data
 def load_activity_data(activity, folder_path):
     data = []
@@ -25,10 +29,11 @@ def load_activity_data(activity, folder_path):
 
 # Load data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "../data/walking"),
-                              ("Jogging", "../data/jogging"),
-                              ("Commuting", "../data/commuting")]:
-    activity_data.append(load_activity_data(activity, folder_path))
+for activity, folder_path in [("Walking", "data/walking"),
+                              ("Jogging", "data/jogging"),
+                              ("Commuting", "data/commuting")]:
+    full_path = os.path.join(parent_dir, folder_path)
+    activity_data.append(load_activity_data(activity, full_path))
 
 # Combine all labeled data into one DataFrame
 df_combined = pd.concat(activity_data, ignore_index=True)
@@ -126,4 +131,8 @@ def predict_activity(file_name, model, le, scaler, window_size=50):
 
     return predicted_labels, overall_activity
 
-predicted_labels, overall_activity = predict_activity("../test_data.tsv", model, le, scaler)
+
+# Construct the path to the test_data.tsv file
+test_data_path = os.path.join(parent_dir, "test_data.tsv")
+
+predicted_labels, overall_activity = predict_activity(test_data_path, model, le, scaler)
