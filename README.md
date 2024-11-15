@@ -1,4 +1,4 @@
-# Activity Prediction Project
+# Activitiy Prediction based on GPS Data
 
 ## Overview
 
