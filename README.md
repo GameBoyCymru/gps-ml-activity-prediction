@@ -14,15 +14,28 @@ Additionally, GridSearch and CrossValidation techniques are applied to each of t
 
 The project consists of the following main files:
 
-- `RandomForestClassifier.py`: Implements the Random Forest Classifier.
-- `SupportVectorMachine.py`: Implements the Support Vector Machine.
-- `GradientBoostingClassifier.py`: Implements the Gradient Boosting Classifier.
-- `LSTM.py`: Implements the LSTM neural network.
-- `RFC-CrossValidation.py`: Implements cross-validation for the Random Forest Classifier.
-- `SVM-CrossValidation.py`: Implements cross-validation for the SVM.
-- `GBC-CrossValidation.py`: Implements cross-validation for the Gradient Boosting Classifier.
-- `SVM-GridSearch.py`: Implements GridSearch for the SVM.
-- `GBC-GridSearch.py`: Implements GridSearch for the Gradient Boosting Classifier.
+    ┌── gps-ml-activity-prediction   
+    │  ├── data
+    │      ├── Commuting
+    │      ├── Jogging
+    │      └── Walking
+    │  ├── GradientBoosting
+    │      └── GradientBoostingClassifier.py
+    │      └── GBC-CrossValidation.py
+    │      └── GBC-GridSearch.py
+    │  ├── NeuralNetwork
+    │      └── LSTM.py
+    │  ├── RandomForest
+    │      └── RandomForestClassifier.py
+    │      └── RFC-CrossValidation.py
+    │      └── RFC-GridSearch.py
+    │  ├── SupportVectorMachine
+    │      └── SupportVectorMachine.py
+    │      └── SVM-CrossValidation.py
+    │      └── SVM-GridSearch.py
+    │  └── README.md
+    │  └── test_data.tsv
+    └────────────────────────────────
 
 ## Data Loading and Preprocessing
 
