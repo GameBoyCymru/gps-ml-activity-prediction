@@ -93,7 +93,7 @@ Optional Python libraries:
 You can install these dependencies using pip:
 
 ```bash
-pip install pandas numpy scikit-learn tensorflow tabulate
+pip install pandas scikit-learn tensorflow tabulate
 ```
 
 ## Conclusion
