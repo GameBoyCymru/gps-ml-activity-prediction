@@ -22,9 +22,9 @@ def load_activity_data(activity, folder_path):
 
 # Load and label data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "walking"),
-                              ("Jogging", "jogging"),
-                              ("Commuting", "commuting")]:
+for activity, folder_path in [("Walking", "../data/walking"),
+                              ("Jogging", "../data/jogging"),
+                              ("Commuting", "../data/commuting")]:
     activity_data.append(load_activity_data(activity, folder_path))
 
 # Combine all labeled data into one DataFrame
@@ -89,4 +89,4 @@ def predict_activity(file_name, model):
     return new_data, overall_activity
 
 model.fit(X, y)
-result, overall_activity = predict_activity("test_data.tsv", model)
+result, overall_activity = predict_activity("../test_data.tsv", model)

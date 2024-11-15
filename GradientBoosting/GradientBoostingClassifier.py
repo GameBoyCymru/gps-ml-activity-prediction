@@ -2,11 +2,12 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+from sklearn.ensemble import GradientBoostingClassifier
 #from tabulate import tabulate
 
 pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
+
 
 # Function to load and label data from multiple files in each folder
 def load_activity_data(activity, folder_path):
@@ -26,9 +27,9 @@ def load_activity_data(activity, folder_path):
 
 # Load and label data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "walking"),
-                              ("Jogging", "jogging"),
-                              ("Commuting", "commuting")]:
+for activity, folder_path in [("Walking", "../data/walking"),
+                              ("Jogging", "../data/jogging"),
+                              ("Commuting", "../data/commuting")]:
     activity_data.append(load_activity_data(activity, folder_path))
 
 # Combine all labeled data into one DataFrame
@@ -59,7 +60,7 @@ y = df_combined['activity']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train the classifier
-model = SVC(kernel='rbf', random_state=42)
+model = GradientBoostingClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Evaluate the model
@@ -94,7 +95,5 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
-
-# Example usage with a new file
-result, overall_activity = predict_activity("test_data.tsv", model)
+result, overall_activity = predict_activity("../test_data.tsv", model)
 

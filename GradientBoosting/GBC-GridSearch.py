@@ -22,9 +22,9 @@ def load_activity_data(activity, folder_path):
 
 # Load and label data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "walking"),
-                              ("Jogging", "jogging"),
-                              ("Commuting", "commuting")]:
+for activity, folder_path in [("Walking", "../data/walking"),
+                              ("Jogging", "../data/jogging"),
+                              ("Commuting", "../data/commuting")]:
     activity_data.append(load_activity_data(activity, folder_path))
 
 # Combine all labeled data into one DataFrame
@@ -107,6 +107,6 @@ def predict_activity(file_name, model):
     #print("\nFirst 20 row-by-row predictions:")
     #print(tabulate(result[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False)
 
-result, overall_activity = predict_activity("test_data.tsv", best_model)
+result, overall_activity = predict_activity("../test_data.tsv", best_model)
 
 

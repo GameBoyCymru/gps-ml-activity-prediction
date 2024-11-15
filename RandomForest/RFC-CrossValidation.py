@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 #from tabulate import tabulate
 
@@ -22,9 +22,9 @@ def load_activity_data(activity, folder_path):
 
 # Load and label data from each activity folder
 activity_data = []
-for activity, folder_path in [("Walking", "walking"),
-                              ("Jogging", "jogging"),
-                              ("Commuting", "commuting")]:
+for activity, folder_path in [("Walking", "../data/walking"),
+                              ("Jogging", "../data/jogging"),
+                              ("Commuting", "../data/commuting")]:
     activity_data.append(load_activity_data(activity, folder_path))
 
 # Combine all labeled data into one DataFrame
@@ -51,8 +51,8 @@ df_combined = df_combined.groupby('activity', group_keys=False).apply(
 X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
 y = df_combined['activity']
 
-# Create the SVM model
-model = SVC(kernel='rbf', random_state=42)
+# Create the RandomForestClassifier model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 
 # Perform 10-fold cross-validation
 cv_scores = cross_val_score(model, X, y, cv=10, scoring='accuracy')
@@ -88,5 +88,6 @@ def predict_activity(file_name, model):
 
     return new_data, overall_activity
 
+
 model.fit(X, y)
-result, overall_activity = predict_activity("test_data.tsv", model)
+result, overall_activity = predict_activity("../test_data.tsv", model)
