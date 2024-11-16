@@ -4,6 +4,9 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Set options and paths
 pd.set_option('future.no_silent_downcasting', True)
@@ -114,3 +117,22 @@ test_data_path = os.path.join(parent_dir, "test_data.tsv")
 
 # Example usage with a new file
 result, overall_activity = predict_activity(test_data_path, model)
+
+# Get predictions for the test set
+y_pred_prob = model.predict(X_test)
+y_pred = np.argmax(y_pred_prob, axis=1)  # Convert probabilities to class indices
+
+# Decode true and predicted labels
+y_true_decoded = encoder.inverse_transform(y_test)
+y_pred_decoded = encoder.inverse_transform(y_pred)
+
+# Generate confusion matrix
+conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=encoder.classes_)
+
+# Visualize confusion matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=encoder.classes_, yticklabels=encoder.classes_)
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix')
+plt.show()
