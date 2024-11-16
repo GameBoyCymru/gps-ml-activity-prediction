@@ -142,9 +142,9 @@ conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=label_enco
 # Plot confusion matrix
 plt.figure(figsize=(10, 8))
 sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=label_encoder.classes_, yticklabels=label_encoder.classes_)
-plt.xlabel('Predicted Labels')
-plt.ylabel('True Labels')
-plt.title('Confusion Matrix')
+plt.xlabel('Predicted Activity')
+plt.ylabel('True Activity')
+plt.title('RNN Confusion Matrix Heatmap')
 plt.show()
 
 
