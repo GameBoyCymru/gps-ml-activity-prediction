@@ -40,7 +40,7 @@ The project consists of the following main files:
 
 ## Data Loading and Preprocessing
 
-Each script contains a function to load and label data from multiple `.tsv` files. The data is then combined into a single DataFrame. Feature engineering is performed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change.
+Each script contains a function to load and label data from multiple `.tsv` files (with `UTF-16` encoding). The data is then combined into a single DataFrame. Feature engineering is performed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change.
 
 ## Model Training and Evaluation
 
@@ -52,7 +52,7 @@ Each script contains a function to load and label data from multiple `.tsv` file
 
 ### Support Vector Machine
 
-- `SupportVectorMachine.py`: Trains an `SVM` model and evaluates its accuracy.
+- `SupportVectorMachine.py`: Trains a `SVM` model and evaluates its accuracy.
 - `SVM-CrossValidation.py`: Performs 10-fold cross-validation on the `SVM` model.
 - `SVM-GridSearch.py`: Uses GridSearch to find the best hyperparameters for the `SVM` model.
 
@@ -69,7 +69,7 @@ Each script contains a function to load and label data from multiple `.tsv` file
 
 ## Prediction
 
-Each script includes a function to predict the activity for new data contained in a `.tsv` file. The function applies the same feature extraction process and uses the trained model to make predictions.
+Each script includes a function to predict the activity for new data contained in a `.tsv` file (with `UTF-16` encoding). The function applies the same feature extraction process and uses the trained model to make predictions.
 
 ## Example Usage
 
