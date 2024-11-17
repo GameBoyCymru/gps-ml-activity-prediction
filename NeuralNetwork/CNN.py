@@ -8,54 +8,18 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Set options and paths
-pd.set_option('future.no_silent_downcasting', True)
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(script_dir, ".."))
+# Add the parent directory to the sys.path
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+from load_data import load_and_process_data
+from load_data import extract_features 
 
-# Function to load and label data
-def load_activity_data(activity, folder_path):
-    data = []
-    for file_name in os.listdir(folder_path):
-        if file_name.endswith(".tsv"):
-            file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path, sep='\t', encoding='utf-16')
-            df.columns = df.columns.str.strip().str.lower()
-            if 'speed (km/h)' in df.columns:
-                df['activity'] = activity
-                data.append(df)
-            else:
-                print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
-    return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
+pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
 
-# Load data from each activity folder
-activity_data = []
-for activity, folder_path in [("Walking", "data/walking"),
-                              ("Jogging", "data/jogging"),
-                              ("Commuting", "data/commuting")]:
-    full_path = os.path.join(parent_dir, folder_path)
-    activity_data.append(load_activity_data(activity, full_path))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-# Combine all labelled data into one DataFrame
-df_combined = pd.concat(activity_data, ignore_index=True)
-
-if 'activity' not in df_combined.columns:
-    raise KeyError("'activity' column is missing from df_combined.")
-
-# Feature engineering function
-def extract_features(df):
-    df['speed variance'] = df['speed (km/h)'].rolling(window=5).std()
-    df['avg speed'] = df['speed (km/h)'].rolling(window=5).mean()
-    df['distance'] = np.sqrt((df['longitude'].diff() ** 2 + df['latitude'].diff() ** 2))
-    df = df.fillna(0)
-    return df
-
-df_combined = df_combined.groupby('activity', group_keys=False).apply(
-    lambda x: extract_features(x).assign(activity=x.name))
-
-# Prepare data for CNN
-X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
-y = df_combined['activity']
+# Load and process the data
+X, y = load_and_process_data(parent_dir)
 
 # Normalize features
 scaler = StandardScaler()
@@ -97,7 +61,7 @@ def predict_activity(file_name, model):
         raise KeyError("The new data file is missing the 'Speed (km/h)' column.")
 
     new_data = extract_features(new_data)
-    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance']]
+    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
 
     # Normalize and reshape data
     X_new = scaler.transform(X_new)

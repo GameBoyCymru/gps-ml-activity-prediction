@@ -15,7 +15,7 @@ pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warning
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-# Load and process the data using the base path (activities are inside load_data.py)
+# Load and process the data
 X, y = load_and_process_data(parent_dir)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

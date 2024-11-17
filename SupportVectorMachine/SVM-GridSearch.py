@@ -5,57 +5,18 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 #from tabulate import tabulate
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(script_dir, ".."))
+# Add the parent directory to the sys.path
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data')))
+from load_data import load_and_process_data
+from load_data import extract_features 
 
+pd.set_option('future.no_silent_downcasting', True)  # Hides downcasting warnings
 
-# Function to load and label data
-def load_activity_data(activity, folder_path):
-    data = []
-    for file_name in os.listdir(folder_path):
-        if file_name.endswith(".tsv"):
-            file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path, sep='\t', encoding='utf-16')
-            df.columns = df.columns.str.strip().str.lower()
-            if 'speed (km/h)' in df.columns:
-                df['activity'] = activity
-                data.append(df)
-            else:
-                print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
-    return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-# Load data from each activity folder
-activity_data = []
-for activity, folder_path in [("Walking", "data/walking"),
-                              ("Jogging", "data/jogging"),
-                              ("Commuting", "data/commuting")]:
-    full_path = os.path.join(parent_dir, folder_path)
-    activity_data.append(load_activity_data(activity, full_path))
-
-# Combine all labeled data into one DataFrame
-df_combined = pd.concat(activity_data, ignore_index=True)
-
-# Check if 'activity' column exists and print column names for debugging
-if 'activity' not in df_combined.columns:
-    raise KeyError("'activity' column is missing from df_combined.")
-#print("Columns in df_combined:", df_combined.columns)
-
-# Enhanced Feature Engineering Function
-def extract_features(df):
-    df['speed variance'] = df['speed (km/h)'].rolling(window=5, min_periods=1).std()
-    df['avg speed'] = df['speed (km/h)'].rolling(window=5, min_periods=1).mean()
-    df['distance'] = np.sqrt((df['longitude'].diff() ** 2 + df['latitude'].diff() ** 2))
-    df['acceleration'] = df['speed (km/h)'].diff()  # New feature: speed change between readings
-    df = df.fillna(0)
-    df = df.infer_objects()
-    return df
-
-df_combined = df_combined.groupby('activity', group_keys=False).apply(
-    lambda x: extract_features(x).assign(activity=x.name))
-
-# Prepare data for model training
-X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
-y = df_combined['activity']
+# Load and process the data
+X, y = load_and_process_data(parent_dir)
 
 # Set up hyperparameter grid for SVC
 param_grid = {
