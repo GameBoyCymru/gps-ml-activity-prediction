@@ -2,13 +2,13 @@
 
 ## Overview
 
-This project aims to predict the type of activity (e.g., Walking, Jogging, Commuting) based on GPS data contained in `.tsv` files. The project utilizes three machine learning algorithms and a neural network to perform the predictions. The machine learning algorithms used are:
+The project aims to predict activities based on GPS data using machine learning algorithms and neural networks. The dataset contains GPS data for three activities: `Commuting`, `Jogging`, and `Walking`. The data is preprocessed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change. The project includes the following models:
 
-1. Random Forest Classifier
-2. Support Vector Machine (SVM)
-3. Gradient Boosting Classifier
-
-Additionally, GridSearch and CrossValidation techniques are applied to each of these algorithms to optimize their performance. A Long Short-Term Memory (LSTM) neural network is also implemented for activity prediction. For all algorithms, the accuracy is printed to the console, alongside the activity the algorithm has predicted for the file. Optionally, Tabulate can be used to also display the prediction on a row by row basis all Machine Learning models.
+- Random Forest Classifier
+- Support Vector Machine
+- Gradient Boosting Classifier
+- Convolutional Neural Network
+- Recurrent Neural Network
 
 ## Project Structure
 
@@ -24,7 +24,8 @@ The project consists of the following main files:
     │      └── GBC-CrossValidation.py
     │      └── GBC-GridSearch.py
     │  ├── NeuralNetwork
-    │      └── LSTM.py
+    │      └── CNN.py
+    │      └── RNN.py
     │  ├── RandomForest
     │      └── RandomForestClassifier.py
     │      └── RFC-CrossValidation.py
@@ -61,9 +62,10 @@ Each script contains a function to load and label data from multiple `.tsv` file
 - `GBC-CrossValidation.py`: Performs 10-fold cross-validation on the `Gradient Boosting` model.
 - `GBC-GridSearch.py`: Uses GridSearch to find the best hyperparameters for the `Gradient Boosting` model.
 
-### LSTM Neural Network
+### Neural Network
 
-- `LSTM.py`: Trains an LSTM neural network and evaluates its accuracy.
+- `CNN.py`: Trains a `Convolutional Neural Network` and evaluates its accuracy, while also displaying a Confusion Matrix Heatmap.
+- `RNN.py`: Trains a `Recurrent Neural Network` and evaluates its accuracy, while also displaying a Confusion Matrix Heatmap.
 
 ## Prediction
 
