@@ -18,7 +18,8 @@ The project consists of the following main files:
     │  ├── data
     │      ├── Commuting
     │      ├── Jogging
-    │      └── Walking
+    │      ├── Walking
+    │      └── load_data.py
     │  ├── GradientBoosting
     │      └── GradientBoostingClassifier.py
     │      └── GBC-CrossValidation.py
@@ -41,6 +42,8 @@ The project consists of the following main files:
 ## Data Loading and Preprocessing
 
 Each script contains a function to load and label data from multiple `.tsv` files (with `UTF-16` encoding). The data is then combined into a single DataFrame. Feature engineering is performed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change.
+
+- `load_data.py`: Contains functions to load and label data from multiple `.tsv` files (with `UTF-16` encoding). The data is then combined into a single DataFrame and returned to the calling script.
 
 ## Model Training and Evaluation
 
