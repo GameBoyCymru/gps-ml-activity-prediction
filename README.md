@@ -81,19 +81,20 @@ test_data_path = os.path.join(parent_dir, "test_data.tsv")
 
 ## Dependencies
 
-Required Python (3.12) libraries:
+Required **Python (3.12)** libraries:
 - pandas
 - numpy
 - scikit-learn
-- tensorflow (for LSTM)
+- tensorflow (for Neural Networks)
+- seaborn (for Neural Networks)
+- matplotlib (for Neural Networks)
 
 Optional Python libraries:
 - tabulate (only required to print the results in a tabular format - disabled by default)
 
-You can install these dependencies using pip:
-
+### Installing Dependencies via pip
 ```bash
-pip install pandas scikit-learn tensorflow tabulate
+pip install -r requirements.txt
 ```
 
 ## Conclusion
