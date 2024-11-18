@@ -4,23 +4,25 @@ import numpy as np
 
 # Define the activities and their corresponding folder paths
 ACTIVITIES = {
-    "Walking": "data/walking",
-    "Jogging": "data/jogging",
-    "Commuting": "data/commuting",
+    "1": "data/walking",    # "1" Corresponds to the labelled data for walking
+    "2": "data/jogging",    # "2" Corresponds to the labelled data for jogging
+    "3": "data/commuting",  # "3" Corresponds to the labelled data for commuting
 }
 
 def load_activity_data(activity, folder_path):
     data = []
     for file_name in os.listdir(folder_path):
-        if file_name.endswith(".tsv"):
+        if file_name.endswith(".csv") or file_name.endswith(".tsv"):
             file_path = os.path.join(folder_path, file_name)
-            df = pd.read_csv(file_path, sep='\t', encoding='utf-16')
-            df.columns = df.columns.str.strip().str.lower()
-            if 'speed (km/h)' in df.columns:
-                df['activity'] = activity
-                data.append(df)
+            if file_name.endswith(".csv"):
+                df = pd.read_csv(file_path, sep=',', encoding='utf-8')
             else:
-                print(f"Warning: 'Speed (km/h)' column missing in {file_name}")
+                df = pd.read_csv(file_path, sep='\t', encoding='utf-16')
+            df.columns = df.columns.str.strip().str.lower()
+            # if no target column, add it
+            if 'target' not in df.columns:
+                df['target'] = activity
+            data.append(df)
     return pd.concat(data, ignore_index=True) if data else pd.DataFrame()
 
 
@@ -43,17 +45,23 @@ def load_and_process_data(base_path):
 
     # Combine all labelled data into one DataFrame
     df_combined = pd.concat(activity_data, ignore_index=True)
+    
+     # Load labeled data
+    labeled_data = load_activity_data(0, os.path.join(os.path.dirname(__file__), os.path.join(os.path.dirname(__file__), "Labelled")))
+
+    # Combine data
+    df_combined = pd.concat([df_combined, labeled_data], ignore_index=True)
+
 
     # Check if 'activity' column exists
-    if 'activity' not in df_combined.columns:
-        raise KeyError("'activity' column is missing from the combined dataset.")
+    # if 'activity' not in df_combined.columns:
+    #     raise KeyError("'activity' column is missing from the combined dataset.")
 
     # Feature engineering
-    df_combined = df_combined.groupby('activity', group_keys=False).apply(
-        lambda x: extract_features(x).assign(activity=x.name)
-    )
+    df_combined = df_combined.groupby('target', group_keys=False).apply(
+        lambda x: extract_features(x).assign(target=int(x.name)))
 
     # Prepare X and y
-    X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
-    y = df_combined['activity']
+    X = df_combined[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration', 'longitude', 'latitude']]
+    y = df_combined['target']
     return X, y
