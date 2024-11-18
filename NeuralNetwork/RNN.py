@@ -57,7 +57,7 @@ model.fit(X_train, y_train, epochs=35, batch_size=32, validation_data=(X_test, y
 
 # Evaluate the model
 loss, accuracy = model.evaluate(X_test, y_test)
-print("\nAccuracy:", accuracy)
+
 
 activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
 
@@ -89,16 +89,11 @@ def predict_activity(file_name, model, label_encoder, scaler, timesteps=10):
     
     overall_activity = activity_labels[overall_activity] 
     
-    
-    print("\nOverall Predicted Activity for the file:", overall_activity)
-
-    return predicted_labels, overall_activity
-
-
+    return overall_activity
 
 # Predict activity for test data
 test_data_path = os.path.join(parent_dir, "test_data.tsv")
-predicted_labels, overall_activity = predict_activity(test_data_path, model, label_encoder, scaler)
+overall_activity = predict_activity(test_data_path, model, label_encoder, scaler)
 
 # Get predictions
 y_pred_prob = model.predict(X_test)
@@ -110,7 +105,9 @@ y_pred_decoded = [activity_labels[label] for label in y_pred] # Decode predicted
 y_true_decoded = [activity_labels[label] for label in y_true] # Decode true labels to human-readable labels
 
 
-
+print("\nOverall Predicted Activity for the file:", overall_activity)
+print("\nAccuracy:", accuracy)
+print("\nLoss:", loss)
 # Generate and display classification report
 print("\nClassification Report:\n")
 print(classification_report(y_true_decoded, y_pred_decoded, target_names=list(activity_labels.values())))

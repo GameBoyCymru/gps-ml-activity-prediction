@@ -4,7 +4,7 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-#from tabulate import tabulate
+from tabulate import tabulate
 
 # Add the parent directory to the sys.path
 import sys
@@ -26,7 +26,6 @@ model.fit(X_train, y_train)
 
 # Evaluate the model
 y_pred = model.predict(X_test)
-print("\nAccuracy:", accuracy_score(y_test, y_pred))
 
 
 # Prediction function for new data with formatted output
@@ -50,19 +49,21 @@ def predict_activity(file_name, model):
     
     activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
     overall_activity = activity_labels[overall_activity]
-    
-    
-    print("\nOverall Predicted Activity for the file:", overall_activity)
+    new_data['Predicted Activity'] = new_data['Predicted Activity'].map(activity_labels)
+
 
     # Display the first 20 row-by-row predictions in table format
     #print("\nFirst 20 row-by-row predictions:")
     #print(tabulate(new_data[['date', 'speed (km/h)', 'Predicted Activity']].head(20), headers='keys', tablefmt='pretty', showindex=False))
 
-    return new_data, overall_activity
+    return overall_activity
 
 # Construct the path to the test_data.tsv file
 test_data_path = os.path.join(parent_dir, "test_data.tsv")
+overall_activity = predict_activity(test_data_path, model)
 
-# Example usage with a new file
-result, overall_activity = predict_activity(test_data_path, model)
+
+print("\nOverall Predicted Activity for the file:", overall_activity)
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+
 

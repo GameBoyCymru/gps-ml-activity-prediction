@@ -39,10 +39,6 @@ grid_search = GridSearchCV(
 # Fit GridSearchCV to the data to find the best model
 grid_search.fit(X, y)
 
-# Print the best parameters and the corresponding score
-print("\nBest Parameters:\n", grid_search.best_params_)
-print("\nBest Cross-Validation Accuracy:", grid_search.best_score_)
-
 # Use the best model from GridSearchCV
 best_model = grid_search.best_estimator_
 
@@ -67,20 +63,22 @@ def predict_activity(file_name, model):
      
     activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
     overall_activity = activity_labels[overall_activity]
-
-    # Print overall activity
-    print("\nOverall Predicted Activity for the file:", overall_activity)
-
-    return new_data, overall_activity
-
+    new_data['Predicted Activity'] = new_data['Predicted Activity'].map(activity_labels)
+    
+    
     #Display the first 20 row-by-row predictions in table format
     #print("\nFirst 20 row-by-row predictions:")
     #print(tabulate(result[['date', 'speed (km/h)', 'Predicted Activity']].head(15), headers='keys', tablefmt='pretty', showindex=False)
+    
+    
+    return overall_activity
 
-
+    
+    
 # Construct the path to the test_data.tsv file
 test_data_path = os.path.join(parent_dir, "test_data.tsv")
+overall_activity = predict_activity(test_data_path, best_model)
 
-result, overall_activity = predict_activity(test_data_path, best_model)
-
-
+print("\nOverall Predicted Activity for the file:", overall_activity)
+print("\nBest Accuracy:", grid_search.best_score_)
+print("\nBest Parameters:\n", grid_search.best_params_)
