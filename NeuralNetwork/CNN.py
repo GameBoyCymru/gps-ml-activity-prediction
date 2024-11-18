@@ -91,7 +91,7 @@ y_true_decoded = encoder.inverse_transform(y_test)
 y_pred_decoded = encoder.inverse_transform(y_pred)
 
 # Generate classification report
-print(classification_report(y_true_decoded, y_pred_decoded, target_names=encoder.classes_))
+print("\n",classification_report(y_true_decoded, y_pred_decoded, target_names=encoder.classes_))
 
 # Generate confusion matrix
 conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=encoder.classes_)
