@@ -37,7 +37,7 @@ def predict_activity(file_name, model):
 
     # Apply feature extraction
     new_data = extract_features(new_data)
-    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']]
+    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration', 'longitude', 'latitude']]
 
     # Make predictions for each row
     predictions = model.predict(X_new)
@@ -45,6 +45,10 @@ def predict_activity(file_name, model):
 
     # Calculate the overall predicted activity for the file
     overall_activity = new_data['Predicted Activity'].mode()[0]  # Get the most frequent prediction
+
+     
+    activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
+    overall_activity = activity_labels[overall_activity]
 
     # Print overall activity
     print("\nOverall Predicted Activity for the file:", overall_activity)
