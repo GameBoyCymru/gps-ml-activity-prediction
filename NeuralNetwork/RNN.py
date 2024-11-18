@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout
 from tensorflow.keras.utils import to_categorical
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -99,6 +99,9 @@ y_true = y_test.argmax(axis=1)       # Get class indices for true labels
 # Decode labels
 y_pred_decoded = label_encoder.inverse_transform(y_pred)
 y_true_decoded = label_encoder.inverse_transform(y_true)
+
+print("\n",classification_report(y_true_decoded, y_pred_decoded, target_names=label_encoder.classes_))
+
 
 # Generate confusion matrix
 conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=label_encoder.classes_)

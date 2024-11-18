@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -89,6 +89,9 @@ y_pred = np.argmax(y_pred_prob, axis=1)  # Convert probabilities to class indice
 # Decode true and predicted labels
 y_true_decoded = encoder.inverse_transform(y_test)
 y_pred_decoded = encoder.inverse_transform(y_pred)
+
+# Generate classification report
+print(classification_report(y_true_decoded, y_pred_decoded, target_names=encoder.classes_))
 
 # Generate confusion matrix
 conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=encoder.classes_)
