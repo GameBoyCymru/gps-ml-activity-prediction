@@ -59,6 +59,8 @@ model.fit(X_train, y_train, epochs=35, batch_size=32, validation_data=(X_test, y
 loss, accuracy = model.evaluate(X_test, y_test)
 print("\nAccuracy:", accuracy)
 
+activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
+
 # Prediction function for new data
 def predict_activity(file_name, model, label_encoder, scaler, timesteps=10):
     new_data = pd.read_csv(file_name, sep='\t', encoding='utf-16')
@@ -69,7 +71,7 @@ def predict_activity(file_name, model, label_encoder, scaler, timesteps=10):
 
     # Apply feature extraction
     new_data = extract_features(new_data)
-    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration']].values
+    X_new = new_data[['speed (km/h)', 'speed variance', 'avg speed', 'distance', 'acceleration', 'longitude', 'latitude']].values
 
     # Normalize and reshape data
     X_new_normalized = scaler.transform(X_new)
@@ -82,9 +84,16 @@ def predict_activity(file_name, model, label_encoder, scaler, timesteps=10):
 
     # Determine overall activity
     overall_activity = pd.Series(predicted_labels).mode()[0]
+    
+    # Print the activity code to a human-readable label (without changing the original data)
+    
+    overall_activity = activity_labels[overall_activity] 
+    
+    
     print("\nOverall Predicted Activity for the file:", overall_activity)
 
     return predicted_labels, overall_activity
+
 
 
 # Predict activity for test data
@@ -97,21 +106,27 @@ y_pred = y_pred_prob.argmax(axis=1)  # Get class indices for predictions
 y_true = y_test.argmax(axis=1)       # Get class indices for true labels
 
 # Decode labels
-y_pred_decoded = label_encoder.inverse_transform(y_pred)
-y_true_decoded = label_encoder.inverse_transform(y_true)
+y_pred_decoded = [activity_labels[label] for label in y_pred] # Decode predicted labels to human-readable labels
+y_true_decoded = [activity_labels[label] for label in y_true] # Decode true labels to human-readable labels
 
-print("\n",classification_report(y_true_decoded, y_pred_decoded, target_names=label_encoder.classes_))
+
+
+# Generate and display classification report
+print("\nClassification Report:\n")
+print(classification_report(y_true_decoded, y_pred_decoded, target_names=list(activity_labels.values())))
 
 
 # Generate confusion matrix
-conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=label_encoder.classes_)
+conf_matrix = confusion_matrix(y_true_decoded, y_pred_decoded, labels=list(activity_labels.values()))
 
-# Plot confusion matrix
+# Plot confusion matrix with labels
 plt.figure(figsize=(10, 8))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=label_encoder.classes_, yticklabels=label_encoder.classes_)
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=list(activity_labels.values()), 
+            yticklabels=list(activity_labels.values()))
 plt.xlabel('Predicted Activity')
 plt.ylabel('True Activity')
-plt.title('RNN Confusion Matrix Heatmap')
+plt.title('Confusion Matrix with Activity Labels')
 plt.show()
 
 
