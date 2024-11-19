@@ -1,4 +1,5 @@
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0' # Hide TensorFlow warnings
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -9,6 +10,7 @@ from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 
 # Add the parent directory to the sys.path
 import sys
