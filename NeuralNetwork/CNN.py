@@ -47,7 +47,7 @@ model = tf.keras.Sequential([
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-model.fit(X_train, y_train, epochs=35, batch_size=32, validation_data=(X_test, y_test))
+history = model.fit(X_train, y_train, epochs=35, batch_size=32, validation_data=(X_test, y_test))
 
 # Evaluate the model
 loss, accuracy = model.evaluate(X_test, y_test)
@@ -116,3 +116,26 @@ plt.ylabel('True Activity')
 plt.title('Confusion Matrix with Activity Labels')
 plt.show()
 
+# Plot Loss and Accuracy Curves
+plt.figure(figsize=(12, 5))
+
+# Plot Loss
+plt.subplot(1, 2, 1)
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Loss Curve')
+plt.legend()
+
+# Plot Accuracy
+plt.subplot(1, 2, 2)
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.title('Accuracy Curve')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
