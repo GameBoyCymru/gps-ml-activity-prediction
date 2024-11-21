@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project aims to predict activities based on GPS data using machine learning algorithms and neural networks. The dataset contains GPS data for three activities: `Commuting`, `Jogging`, and `Walking`. The data is preprocessed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change. The project includes the following models:
+The project aims to predict activities based on GPS data using machine learning algorithms and neural networks. The dataset contains GPS data on four activities: `Commuting`, `Jogging`, `Walking` and `Idle`. The data is preprocessed to extract relevant features such as speed variance, average speed, distance, acceleration, jerk, and bearing change. The project includes the following models:
 
 - Random Forest Classifier
 - Support Vector Machine
@@ -87,6 +87,7 @@ test_data_path = os.path.join(parent_dir, "test_data.tsv")
 ## Dependencies
 
 Required **Python (3.12)** libraries:
+
 - pandas
 - numpy
 - scikit-learn
@@ -95,6 +96,7 @@ Required **Python (3.12)** libraries:
 - matplotlib (for Neural Networks)
 
 Optional Python libraries:
+
 - tabulate (only required to print the results in a tabular format - disabled by default)
 
 ### Installing Dependencies via pip
