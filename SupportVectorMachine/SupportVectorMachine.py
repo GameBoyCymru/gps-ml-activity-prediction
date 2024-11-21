@@ -48,7 +48,7 @@ def predict_activity(file_name, model):
     overall_activity = new_data['Predicted Activity'].mode()[0]
 
      
-    activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
+    activity_labels = {0: 'Idle', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
     overall_activity = activity_labels[overall_activity]
     new_data['Predicted Activity'] = new_data['Predicted Activity'].map(activity_labels)
     

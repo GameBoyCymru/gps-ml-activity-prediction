@@ -61,7 +61,7 @@ history = model.fit(X_train, y_train, epochs=35, batch_size=32, validation_data=
 loss, accuracy = model.evaluate(X_test, y_test)
 
 
-activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
+activity_labels = {0: 'Idle', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
 
 # Prediction function for new data
 def predict_activity(file_name, model, label_encoder, scaler, timesteps=10):

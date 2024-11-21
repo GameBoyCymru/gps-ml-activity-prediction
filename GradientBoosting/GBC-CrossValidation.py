@@ -40,7 +40,7 @@ def predict_activity(file_name, model):
     new_data['Predicted Activity'] = predictions
     
      
-    activity_labels = {0: 'Standing Still', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
+    activity_labels = {0: 'Idle', 1: 'Walking', 2: 'Jogging', 3: 'Commuting'}
     overall_activity = activity_labels[overall_activity]
     # Calculate the overall predicted activity for the file
     overall_activity = new_data['Predicted Activity'].mode()[0]  # Get the most frequent prediction
